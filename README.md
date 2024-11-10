@@ -1,5 +1,7 @@
 # Slick Nestjs Warp10
 
+Available on npmjs.org : [@slickteam/nestjs-warp10](https://www.npmjs.com/package/@slickteam/nestjs-warp10)
+
 ## Usage
 
 - Install dependency
@@ -34,8 +36,8 @@ class ExempleModule {}
 
 Nestjs
 
-- `@nestjs/common`: `^10.4.4`
-- `@nestjs/config`: `^3.2.3`
+- `@nestjs/common`: `^10.4.7`
+- `@nestjs/config`: `^3.3.0`
 
 Warp10
 
