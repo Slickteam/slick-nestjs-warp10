@@ -48,15 +48,15 @@ export class Warp10Service {
   public readonly w10: Warp10;
 
   public constructor(private configService: ConfigService) {
-    this.writeToken = this.configService.getOrThrow('WARP10_WRITE_TOKEN');
-    this.readToken = this.configService.getOrThrow('WARP10_READ_TOKEN');
+    this.writeToken = this.configService.get('WARP10_WRITE_TOKEN') ?? '';
+    this.readToken = this.configService.get('WARP10_READ_TOKEN') ?? '';
     this.w10 = new Warp10()
       .endpoint(this.configService.getOrThrow('WARP10_URL'))
       .timeout(this.configService.getOrThrow<number>('WARP10_HTTP_TIMEOUT'));
     this.BASE_APP_CLASS_NAME = this.configService.get('WARP10_BASE_CLASS_NAME') ?? 'fr.slickteam.wattson';
   }
 
-  public exec(script: string): Promise<{
+  public execWithToken(script: string): Promise<{
     result: any[];
     meta: { elapsed: number; ops: number; fetched: number };
   }> {
@@ -66,7 +66,16 @@ export class Warp10Service {
     ${script}`);
   }
 
+  public exec(script: string): Promise<{
+    result: any[];
+    meta: { elapsed: number; ops: number; fetched: number };
+  }> {
+    this.logger.verbose(script);
+    return this.w10.exec(script);
+  }
+
   public fetch(
+    readToken: string | undefined,
     className: string,
     labels: Record<string, string>,
     start: string,
@@ -81,24 +90,29 @@ export class Warp10Service {
       fetched: number;
     };
   }> {
-    return this.w10.fetch(this.readToken, className, labels, start, stop, format, dedup);
+    return this.w10.fetch(readToken ?? this.readToken, className, labels, start, stop, format, dedup);
   }
 
   public meta(
+    writeToken: string | undefined,
     meta: {
       className: string;
       labels: Record<string, string>;
       attributes: Record<string, string>;
     }[],
   ): Promise<{ response: string; count: number }> {
-    return this.w10.meta(this.writeToken, meta);
+    return this.w10.meta(writeToken ?? this.writeToken, meta);
   }
 
-  public update(dataPoints: (string | DataPoint)[]): Promise<{ response: string | undefined; count: number }> {
-    return this.w10.update(this.writeToken, dataPoints);
+  public update(
+    writeToken: string | undefined,
+    dataPoints: (string | DataPoint)[],
+  ): Promise<{ response: string | undefined; count: number }> {
+    return this.w10.update(writeToken ?? this.writeToken, dataPoints);
   }
 
   public delete(
+    writeToken: string | undefined,
     className: string,
     labels: Record<string, string>,
     start: string,
@@ -108,7 +122,12 @@ export class Warp10Service {
     return this.w10.delete(this.writeToken, className, labels, start, end, deleteAll);
   }
 
-  public deleteByTimestamp(className: string, labels: Record<string, string>, timestamp: string): Promise<{ result: string }> {
-    return this.w10.delete(this.writeToken, className, labels, timestamp, timestamp, false);
+  public deleteByTimestamp(
+    writeToken: string | undefined,
+    className: string,
+    labels: Record<string, string>,
+    timestamp: string,
+  ): Promise<{ result: string }> {
+    return this.w10.delete(writeToken ?? this.writeToken, className, labels, timestamp, timestamp, false);
   }
 }

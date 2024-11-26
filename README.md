@@ -36,7 +36,7 @@ class ExempleModule {}
 
 Nestjs
 
-- `@nestjs/common`: `^10.4.7`
+- `@nestjs/common`: `^10.4.9`
 - `@nestjs/config`: `^3.3.0`
 
 Warp10
