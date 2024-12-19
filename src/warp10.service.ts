@@ -14,8 +14,11 @@ export enum BuckertizerWarp10Enum {
 
 export enum MapperWarp10Enum {
   EQUAL = 'eq',
+  NOT_EQUAL = 'ne',
   LESSER_THAN = 'lt',
   GREATER_THAN = 'gt',
+  LESSER_THAN_OR_EQUAL = 'le',
+  GREATER_THAN_OR_EQUAL = 'ge',
 }
 
 export enum ReducerWarp10Enum {
