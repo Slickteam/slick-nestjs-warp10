@@ -1,4 +1,4 @@
-export declare interface GTS {
+export interface GTS {
   c: string;
   v: any[];
   a: {

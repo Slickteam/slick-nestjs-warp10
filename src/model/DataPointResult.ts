@@ -1,4 +1,4 @@
-export declare class DataPointResult {
+export class DataPointResult {
   public c: string;
   public v: [number, number | string | boolean][];
   public l: Record<string, string>;

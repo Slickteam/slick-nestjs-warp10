@@ -1,4 +1,4 @@
-export declare class DataPoint {
+export class DataPoint {
   timestamp?: number;
   lat?: number;
   lng?: number;

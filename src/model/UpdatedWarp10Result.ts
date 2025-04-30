@@ -1,4 +1,4 @@
-export declare interface UpdatedWarp10Result {
+export interface UpdatedWarp10Result {
   response: string;
   count: number;
 }

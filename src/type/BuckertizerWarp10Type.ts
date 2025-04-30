@@ -1,4 +1,4 @@
-export declare enum BuckertizerWarp10Type {
+export enum BuckertizerWarp10Type {
   AND = 'and',
   COUNT = 'count',
   FIRST = 'first',

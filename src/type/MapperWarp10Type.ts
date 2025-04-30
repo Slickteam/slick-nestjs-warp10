@@ -1,4 +1,4 @@
-export declare enum MapperWarp10Type {
+export enum MapperWarp10Type {
   ABS = 'abs',
   ADD = 'add',
   AND = 'add',

@@ -1,4 +1,4 @@
-export declare enum ReducerWarp10Type {
+export enum ReducerWarp10Type {
   AND = 'and',
   COUNT = 'count',
   JOIN = 'join',
