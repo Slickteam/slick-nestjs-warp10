@@ -26,7 +26,7 @@ export class Utils {
     };
   }
 
-  public static httpPost(
+  public static async httpPost(
     theUrl: string,
     payload: string,
     headers?: { [key: string]: string },
@@ -39,81 +39,74 @@ export class Utils {
       fetched: number;
     };
   }> {
-    return new Promise((resolve, reject) => {
-      const xmlHttp = new XMLHttpRequest();
-      const resHeaders: any = {};
-      xmlHttp.onreadystatechange = () => {
-        xmlHttp
-          .getAllResponseHeaders()
-          .split('\n')
-          .forEach((header) => {
-            if (header.trim() !== '') {
-              const h = header.split(':');
-              resHeaders[h[0].trim().toLowerCase()] = h[1].trim().replace('\r', '');
-            }
-          });
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-          resolve({
-            data: xmlHttp.responseText,
-            headers: resHeaders,
-            status: {
-              ops: parseInt(resHeaders['x-warp10-ops'], 10),
-              elapsed: parseInt(resHeaders['x-warp10-elapsed'], 10),
-              fetched: parseInt(resHeaders['x-warp10-fetched'], 10),
-            },
-          });
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 403) {
-          reject({
-            statusText: xmlHttp.statusText,
-            status: xmlHttp.status,
-            url: theUrl,
-            headers: resHeaders,
-            message: 'Not Authorized',
-          });
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status >= 500) {
-          if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']) {
-            reject({
-              statusText: xmlHttp.statusText,
-              status: xmlHttp.status,
-              url: theUrl,
-              headers: resHeaders,
-              message: `line #${resHeaders['x-warp10-error-line']}: ${resHeaders['x-warp10-error-message']}`,
-              detail: {
-                mess: resHeaders['x-warp10-error-message'],
-                line: resHeaders['x-warp10-error-line'],
-              },
-            });
-          } else {
-            reject({
-              statusText: xmlHttp.statusText,
-              status: xmlHttp.status,
-              url: theUrl,
-              headers: resHeaders,
-              message: 'WarpScript Error without message',
-            });
-          }
-        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 0) {
-          reject({
-            statusText: theUrl + ' is unreachable',
-            status: 404,
-            url: theUrl,
-            headers: resHeaders,
-            message: theUrl + ' is unreachable',
-            detail: {
-              mess: theUrl + ' is unreachable',
-              line: -1,
-            },
-          });
-        }
-      };
-      xmlHttp.open('POST', theUrl, true); // true for asynchronous
-      xmlHttp.setRequestHeader('Content-Type', 'text/plain; charset=utf-8');
-      const _headers = headers ?? {};
-      Object.keys(_headers)
-        .filter((h) => h.toLowerCase() !== 'accept' && h.toLowerCase() !== 'content-type')
-        .forEach((h) => xmlHttp.setRequestHeader(h, _headers[h]));
-      xmlHttp.send(payload);
+    const _headers = headers ?? {};
+    const response = await fetch(theUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        ..._headers,
+      },
+      body: payload,
     });
+
+    const resHeaders: { [key: string]: string } = {};
+    response.headers.forEach((value, key) => {
+      resHeaders[key.toLowerCase()] = value;
+    });
+
+    if (response.ok) {
+      return {
+        data: await response.text(),
+        headers: resHeaders,
+        status: {
+          ops: parseInt(resHeaders['x-warp10-ops'], 10),
+          elapsed: parseInt(resHeaders['x-warp10-elapsed'], 10),
+          fetched: parseInt(resHeaders['x-warp10-fetched'], 10),
+        },
+      };
+    } else if (response.status === 403) {
+      throw {
+        statusText: response.statusText,
+        status: response.status,
+        url: theUrl,
+        headers: resHeaders,
+        message: 'Not Authorized',
+      };
+    } else if (response.status >= 500) {
+      if (resHeaders['x-warp10-error-line'] && resHeaders['x-warp10-error-message']) {
+        throw {
+          statusText: response.statusText,
+          status: response.status,
+          url: theUrl,
+          headers: resHeaders,
+          message: `line #${resHeaders['x-warp10-error-line']}: ${resHeaders['x-warp10-error-message']}`,
+          detail: {
+            mess: resHeaders['x-warp10-error-message'],
+            line: resHeaders['x-warp10-error-line'],
+          },
+        };
+      } else {
+        throw {
+          statusText: response.statusText,
+          status: response.status,
+          url: theUrl,
+          headers: resHeaders,
+          message: 'WarpScript Error without message',
+        };
+      }
+    } else {
+      throw {
+        statusText: theUrl + ' is unreachable',
+        status: 404,
+        url: theUrl,
+        headers: resHeaders,
+        message: theUrl + ' is unreachable',
+        detail: {
+          mess: theUrl + ' is unreachable',
+          line: -1,
+        },
+      };
+    }
   }
 
   public static sanitize(data: any) {
