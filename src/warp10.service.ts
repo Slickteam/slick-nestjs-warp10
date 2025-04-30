@@ -52,6 +52,18 @@ export class Warp10Service {
     return [] as GTS[];
   }
 
+  public async execWithGtsListResult(request: string | undefined, withInnerToken = false): Promise<GTS[]> {
+    let result = await this.exec(request, withInnerToken);
+    if (!Array.isArray(result)) {
+      result = [result];
+    }
+    if (result.length > 0) {
+      result = result[0] as GTS | GTS[];
+      result = Array.isArray(result) ? result : result ? [result] : [];
+    }
+    return result;
+  }
+
   public fetch(
     readToken: string | undefined,
     className: string,
