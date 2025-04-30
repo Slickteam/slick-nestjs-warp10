@@ -28,7 +28,7 @@ export class Warp10Service {
     this.w10 = new Warp10().endpoint(this.warp10Url).timeout(this.warp10Timeout);
   }
 
-  public async exec(request: string | undefined, withInnerToken = false): Promise<GTS[]> {
+  public async exec(request: string | undefined, withInnerToken = false): Promise<any> {
     if (request) {
       let _request;
       if (withInnerToken) {
@@ -43,8 +43,7 @@ export class Warp10Service {
       try {
         const response = await Utils.httpPost(warp10EndpointExec, _request);
         if (response) {
-          const result = new JsonLib().parse(response.data as string)?.[0] as GTS | GTS[];
-          return Array.isArray(result) ? result : result ? [result] : [];
+          return new JsonLib().parse(response.data as string);
         }
       } catch (err) {
         console.error(err);
