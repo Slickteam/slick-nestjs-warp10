@@ -1,7 +1,14 @@
 import { Module } from '@nestjs/common';
-import { DataPoint, FormattedGTS, GTS, TimeUnits, W10Data } from '@senx/warp10';
 
-import { BuckertizerWarp10Enum, DataPointResult, MapperWarp10Enum, ReducerWarp10Enum, Warp10Service } from './warp10.service';
+import { DataPoint } from './model/DataPoint';
+import { DataPointResult } from './model/DataPointResult';
+import { GTS } from './model/GTS';
+import { UpdatedWarp10Result } from './model/UpdatedWarp10Result';
+import { BuckertizerWarp10Type } from './type/BuckertizerWarp10Type';
+import { MapperWarp10Type } from './type/MapperWarp10Type';
+import { ReducerWarp10Type } from './type/ReducerWarp10Type';
+import { TimeUnits } from './type/TimeUnits';
+import { Warp10Service } from './warp10.service';
 
 @Module({
   providers: [Warp10Service],
@@ -12,14 +19,14 @@ class Warp10Module {}
 export {
   Warp10Module,
   Warp10Service,
-  DataPointResult,
-  BuckertizerWarp10Enum,
-  MapperWarp10Enum,
-  ReducerWarp10Enum,
-  // Warp10 class
+  // Models
   DataPoint,
-  FormattedGTS,
-  TimeUnits,
+  DataPointResult,
   GTS,
-  W10Data,
+  UpdatedWarp10Result,
+  // Types
+  BuckertizerWarp10Type,
+  MapperWarp10Type,
+  ReducerWarp10Type,
+  TimeUnits,
 };
