@@ -1,7 +1,7 @@
 {
   "name": "@slickteam/nestjs-warp10",
   "description": "Module for Warp10 with Nestjs",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "keywords": [
     "Slickteam",
     "Nestjs",
@@ -44,15 +44,15 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.7.2",
     "prettier": "^3.6.2",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.18.3",
   "volta": {
-    "node": "24.7.0"
+    "node": "24.10.0"
   }
 }
